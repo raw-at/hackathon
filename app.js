@@ -16,6 +16,8 @@ app.set('view engine','handlebars');
 var mongodb = require('mongodb');
 var mongoose = require('mongoose');
 
+
+
 mongoose.connect('mongodb://localhost:27017/hackdata');
 
 var donarSchema = mongoose.Schema({
@@ -57,10 +59,52 @@ var doctorSchema = mongoose.Schema({
 
 });
 
+var medicinedonation = mongoose.Schema({
+
+		VolunteeringType:String,
+		medicine_quantity:String,
+		email:String,
+		counter:Number
+
+
+
+});
+
+var doctordonation = mongoose.Schema({
+		email:String,
+		donating_hours:String,
+		donating_days:String
+
+
+
+});
+
+
+var volunteerdonation = mongoose.Schema({
+		email:String,
+		volunteering_hours:String,
+		volunteering_days:String
+
+
+
+});
+
+var contactSchema = mongoose.Schema({
+
+	name:String,
+	email:String,
+	phone:Number,
+	message:String
+
+})
+
 var donor = mongoose.model('donor',donarSchema);
 var volunteer = mongoose.model('volunteer',volunteerSchema);
 var doctor = mongoose.model('doctor',doctorSchema);
-
+var medicinedonation = mongoose.model('medicinedonation',medicinedonation);
+var doctordonation = mongoose.model('doctordonation',doctordonation);
+var volunteeringdonation = mongoose.model('volunteeringdonation',volunteerdonation);
+var contact = mongoose.model('contact',contactSchema);
 
 //morgan
 //middleware setup
@@ -178,23 +222,88 @@ app.get('/login',function(req,res){
 
 app.post('/login',function(req,res){
 
-	var password = req.body.password;
-	console.log(req.body);
-
 	doctor.findOne({email:req.body.email},function(err,user){
 
 		console.log(user);
 		if(err) throw err;
 		if(!user){	
 
-					console.log(req.body.email);
-					console.log(user);
-					return res.render('login');
 
-				}
+
+			donor.findOne({email:req.body.email},function(err,user){
+
+				console.log(user);
+				if(err) throw err;
+				if(!user){	
+
+///////////////////////////////////////////////////////////
+
+								volunteer.findOne({email:req.body.email},function(err,user){
+
+									console.log(user);
+									if(err) throw err;
+									if(!user){	
+
+												console.log(req.body.email);
+												console.log(user);
+												return res.render('login');
+
+											}
+									else if(user)
+										{
+											 if(req.body.password==user.password){
+													
+
+											 	console.log('user');
+												return res.render('volunteerfinal');
+													
+												}
+
+											else{
+
+											 	console.log(user);
+											 	console.log(password);
+													
+													console.log('user password wrong');
+											
+												return res.render('login');	
+											}
+										}
+								});
+
+
+
+/////////////////////////////////////////////////////////////////////
+							
+						}
+				else if(user)
+					{
+						 if(req.body.password==user.password){
+								
+
+						 	console.log('user');
+							return res.render('donor');
+
+								
+							}
+
+						else{
+
+						 	console.log(user);
+						 	console.log(password);
+								
+								console.log('user password wrong');
+						
+							return res.render('login');	
+						}
+					}
+			});
+					
+
+}
 		else if(user)
 			{
-				 if(password==user.password){
+				 if(req.body.password==user.password){
 						
 
 				 	console.log('user');
@@ -214,20 +323,126 @@ app.post('/login',function(req,res){
 				}
 			}
 	});
+
+
+
 });
 
 app.get('/doctor',function(req,res){
 
-	res.render('doctor')
+	res.render('doctor');
+})
+
+app.post('/doctor',function(req,res){
+
+
+	var doctor = new doctordonation();
+	doctor.email = req.body.email,
+	doctor.donating_hours = req.body.donating_hours;
+	doctor.donating_days = req.body.donating_days;
+	doctor.save(function(err){
+
+		if(err) throw err;
+		else res.redirect(303,'/thankyou');
+
+	})
 })
 
 app.get('/donor',function(req,res){
 
-	res.render('donor')
+	res.render('donor');
+
+
 })
+
+app.post('/donor',function(req,res){
+
+
+	var donor = new medicinedonation();
+	donor.email = req.body.email,
+	donor.counter = 0;
+	donor.VolunteeringType = req.body.VolunteeringType;
+	donor.medicine_quantity = req.body.medicine_quantity;
+	medicinedonation.update({email:donor.email},{counter:counter+1},function(err,success){
+
+						if(err)
+							console.log(err);
+						else
+							console.log(counter);
+					});
+
+
+
+
+
+
+	donor.save(function(err){
+
+		if(err) throw err;
+		else res.redirect(303,'/thankyou');
+
+	})
+})
+
+
 app.get('/volunteerfinal',function(req,res){
 
 	res.render('volunteerfinal')
+})
+app.post('/volunteerfinal',function(req,res){
+
+	var volunteer = new volunteeringdonation();
+	volunteer.email = req.body.email,
+	volunteer.volunteering_hours = req.body.volunteering_hours;
+	volunteer.volunteering_days = req.body.volunteering_days;
+	volunteer.save(function(err){
+
+		if(err) throw err;
+		else res.redirect(303,'/thankyou');
+
+	})	
+})
+
+
+app.get('/contact',function(req,res){
+
+	res.render('contact');
+})
+
+app.post('/contact',function(req,res){
+
+	var contact = new contact();
+	contact.name = req.body.name;
+	contact.email = req.body.email;
+	contact.phone = req.body.phone;
+	contact.message = req.body.message;
+
+
+	contact.save(function(err){
+
+		if(err)
+			console.log(err);
+		else
+			res.render('home');
+
+	});
+
+
+})
+
+app.get('/loginregister',function(req,res){
+
+	res.render('loginregister');
+})
+
+app.get('/login',function(req,res){
+
+	res.render('login');
+})
+
+app.get('/file',function(req,res){
+
+	res.json();
 })
 
 app.use(express.static(__dirname+'/public'));

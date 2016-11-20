@@ -169,7 +169,7 @@ font-family: 'Original Surfer', cursive;
 .block_area{
   width: 100%;
   height:auto;
-  background-color: #FFA494;
+  background-color: white;
   overflow: hidden;
   position: relative;
   top:-10px;
@@ -200,7 +200,7 @@ font-family: 'Original Surfer', cursive;
 .second_container{
   width: 100%;
   height:auto;
-  background-color: #D1FF9C;
+  background-color: white;
   overflow: hidden;
   position: relative;
   top:-10px;
@@ -228,7 +228,7 @@ font-family: 'Original Surfer', cursive;
   background-color: rgb(255,246,200);
   overflow: hidden;
   position: relative;
-  top:-10px;
+  top:fir10px;
   padding: 20px;
 }
 #third_container_data h1{
@@ -477,4 +477,20 @@ div.well{
   width:200px;
   height:30px;
  
+}
+
+.area_one{
+
+	height: 800px;
+	width:600px;
+	background-color: red;
+}
+#contact_area{
+  width: 100%;
+  height:auto;
+  background-color:#BDBDBD;
+  overflow: hidden;
+  position: relative;
+  top:-30px;
+  padding: 50px;
 }
