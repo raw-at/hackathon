@@ -3,6 +3,8 @@ var handlebars = require('express-handlebars');
 var morgan = require('morgan');
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
+var client = require('twilio')('AC5a8e2fa80e7382fa096daab7e217f248','c88b7c749cbfb4bde6ca1663df92245b');
+  
 
 var app = express();
 
@@ -18,7 +20,7 @@ var mongoose = require('mongoose');
 
 
 
-mongoose.connect('mongodb://localhost:27017/hackdata');
+mongoose.connect('mongodb://localhost:27017/newdata');
 
 var donarSchema = mongoose.Schema({
 
@@ -39,6 +41,7 @@ var volunteerSchema = mongoose.Schema({
 	email:String,
 	password:String,
 	phone:Number,
+
 	address:String,
 	city:String,
 	volunteer_type:String,
@@ -430,9 +433,10 @@ app.post('/contact',function(req,res){
 
 })
 
-app.get('/loginregister',function(req,res){
+app.get('/signup',function(req,res){
 
-	res.render('loginregister');
+	res.send('Yo');
+
 })
 
 app.get('/login',function(req,res){
@@ -440,11 +444,54 @@ app.get('/login',function(req,res){
 	res.render('login');
 })
 
+app.get('/loginregister',function(req,res){
+
+	res.render('loginregister');
+});
+
+
 app.get('/file',function(req,res){
 
 	res.json();
-})
+});
 
+app.get('/map',function(req,res){
+
+	res.render('volunteerLocation');
+
+});
+
+app.get('/volunteerLocation',function(req,res){
+
+	res.render('volunteerLocation');
+
+});
+
+app.get('/testtwilio',function(req,res){
+
+	client.sendMessage({
+		to:'+918750471553',
+		from:'+1862701-4566',
+		body:"SomeOne Donated Something Near You Address:Rajouri Garden Contact the Sender:",
+
+	},function(err,data){
+
+		if(err) console.log(err);
+		else{
+
+			console.log(data);
+		}
+
+	});
+
+});
+
+app.get('/volunteerProfile',function(req,res){
+
+	res.render('volunteerProfile');
+
+
+});
 app.use(express.static(__dirname+'/public'));
 
 app.listen(port,function(){

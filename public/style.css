@@ -494,3 +494,24 @@ div.well{
   top:-30px;
   padding: 50px;
 }
+
+small {
+display: block;
+line-height: 1.428571429;
+color: #999;
+}
+
+
+
+.glyphicon {  margin-bottom: 10px;margin-right: 10px;}
+
+#profile{
+
+    margin-top:50px;
+    color: black !important;
+    margin-left:350px;
+
+
+}
+
+
